@@ -1,7 +1,7 @@
-# explanations of imdb.py
+# explanations of imdb_cls.py
 
 import numpy as np
-from imdb import train_data
+from imdb_cls import train_data
 
 results = np.zeros((len(train_data), 10000))
 results[0, [3,4,5,4,2]] = 3
@@ -9,7 +9,7 @@ results[0, [3,4,5,4,2]] = 3
 # 且 list 中可以包含重复的值，例如上面 [3,4,5,4,2] 中的 4，
 # 但最终的效果和 [2,3,4,5] 一样
 
-print(res[0:5, 0:5])
+print(results[0:5, 0:5])
 
 train_enum = enumerate(train_data)
 i, sequence = next(train_enum)
