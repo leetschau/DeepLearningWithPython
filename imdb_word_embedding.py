@@ -42,6 +42,8 @@ word_index = tokenizer.word_index
 print("Found %s unique tokens." % len(word_index))
 
 data = pad_sequences(sequences, maxlen=maxlen)
+# 将长度不一致的 sequences 各个元素（都是 List[int]）的长度都填充/截断为
+# maxlen 长度，转为形状为 (25000, 100) 的 numpy.ndarray 赋给 data
 
 labels = np.asarray(labels)
 print('Shape of data tensor:', data.shape)
@@ -125,6 +127,7 @@ plt.legend()
 plt.show()
 
 # code listing 6-16, 不使用预训练嵌入层
+# 即没有对 embedding 层（第0层）做 set_weights 操作
 model2 = Sequential()
 model2.add(Embedding(max_words, embedding_dim, input_length=maxlen))
 model2.add(Flatten())
