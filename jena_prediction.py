@@ -1,6 +1,10 @@
 # for section 6.3.1 ~ 6.3.7
 
 import numpy as np
+from keras.models import Sequential
+from keras import layers
+from keras.optimizers import RMSprop
+import matplotlib.pyplot as plt
 
 fname = './jena_climate_2009_2016.csv'
 
@@ -117,10 +121,6 @@ print(evaluate_naive_method())
 
 # A basic machine learning approach
 
-from keras.models import Sequential
-from keras import layers
-from keras.optimizers import RMSprop
-
 model = Sequential()
 model.add(layers.Flatten(input_shape=(lookback // step, float_data.shape[-1])))
 model.add(layers.Dense(32, activation='relu'))
@@ -130,7 +130,6 @@ model.compile(optimizer=RMSprop(), loss='mae')
 history = model.fit_generator(train_gen, steps_per_epoch=500, epochs=20,
         validation_data=val_gen, validation_steps=val_steps)
 
-import matplotlib.pyplot as plt
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 
@@ -206,5 +205,26 @@ epochs = range(1, len(loss) + 1)
 plt.plot(epochs, loss, 'ro', label='Stack Training loss')
 plt.plot(epochs, val_loss, 'b', label='Stack Validation loss')
 plt.title('Stack Training and validation loss')
+plt.legend()
+plt.show()
+
+# code listing 6-44 训练并评估一个双向 GRU
+
+model_bigru = Sequential()
+model_bigru.add(layers.Bidirectional(layers.GRU(32),
+    input_shape=(None, float_data.shape[-1])))
+model_bigru.add(layers.Dense(1))
+
+model_bigru.compile(optimizer=RMSprop(), loss='mae')
+history = model_bigru.fit_generator(train_gen, steps_per_epoch=500, epochs=3,
+        validation_data=val_gen, validation_steps=val_steps)
+
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(1, len(loss) + 1)
+plt.plot(epochs, loss, 'ro', label='Bidirectional GRU MAE Training loss')
+plt.plot(epochs, val_loss, 'b', label='Bidirectional GRU MAE Validation loss')
+plt.title('Bidirectional GRU MAE Training and validation loss')
 plt.legend()
 plt.show()
