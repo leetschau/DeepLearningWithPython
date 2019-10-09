@@ -1,5 +1,11 @@
 # code listing 6-8
 import os
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+from keras.models import Sequential
+from keras.layers import Embedding, Flatten, Dense
+import numpy as np
+import matplotlib.pyplot as plt
 
 imdb_dir = './aclImdb'
 train_dir = os.path.join(imdb_dir, 'train')
@@ -23,10 +29,6 @@ for label_type in ['neg', 'pos']:
 # 后一半在 pos 文件夹里，对应 label 为 1
 
 # code listing 6-9
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
-import numpy as np
-
 maxlen = 100
 training_samples = 200
 validation_samples = 10000
@@ -36,7 +38,8 @@ tokenizer = Tokenizer(num_words=max_words)
 tokenizer.fit_on_texts(texts)
 sequences = tokenizer.texts_to_sequences(texts)
 # this is a list, whose element is a integer list
-# the length of the integer list is the word count in the corresponding txt file
+# the length of the integer list is the word count
+# in the corresponding txt file
 
 word_index = tokenizer.word_index
 print("Found %s unique tokens." % len(word_index))
@@ -56,8 +59,8 @@ labels = labels[indices]
 
 x_train = data[:training_samples]
 y_train = labels[:training_samples]
-x_val = data[training_samples : training_samples + validation_samples]
-y_val = labels[training_samples : training_samples + validation_samples]
+x_val = data[training_samples: training_samples + validation_samples]
+y_val = labels[training_samples: training_samples + validation_samples]
 
 # code listing 6-10
 glove_dir = './glove.6B'
@@ -84,9 +87,6 @@ for word, i in word_index.items():
             embedding_matrix[i] = embedding_vector
 
 # code listing 6-12
-from keras.models import Sequential
-from keras.layers import Embedding, Flatten, Dense
-
 model = Sequential()
 model.add(Embedding(max_words, embedding_dim, input_length=maxlen))
 model.add(Flatten())
@@ -103,11 +103,10 @@ model.compile(optimizer='rmsprop',
               loss='binary_crossentropy',
               metrics=['acc'])
 history = model.fit(x_train, y_train, epochs=10, batch_size=32,
-        validation_data=(x_val, y_val))
+                    validation_data=(x_val, y_val))
 model.save_weights('pre_trained_glove_model.h5')
 
 # code listing 6-15
-import matplotlib.pyplot as plt
 acc = history.history['acc']
 val_acc = history.history['val_acc']
 loss = history.history['loss']
@@ -136,9 +135,9 @@ model2.add(Dense(1, activation='sigmoid'))
 model2.summary()
 
 model2.compile(optimizer='rmsprop', loss='binary_crossentropy',
-        metrics=['acc'])
+               metrics=['acc'])
 history2 = model2.fit(x_train, y_train, epochs=10, batch_size=32,
-        validation_data=[x_val, y_val])
+                      validation_data=[x_val, y_val])
 
 acc2 = history2.history['acc']
 val_acc2 = history2.history['val_acc']
