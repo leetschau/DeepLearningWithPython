@@ -29,9 +29,9 @@ model.add(LSTM(32))
 model.add(Dense(1, activation='sigmoid'))
 
 model.compile(optimizer='rmsprop', loss='binary_crossentropy',
-        metrics=['acc'])
+              metrics=['acc'])
 history = model.fit(input_train, y_train, epochs=8,
-        batch_size=128, validation_split=0.2)
+                    batch_size=128, validation_split=0.2)
 
 acc = history.history['acc']
 val_acc = history.history['val_acc']
@@ -50,4 +50,3 @@ plt.plot(epochs, val_loss, 'b', label='Validation loss')
 plt.title('Training and validation loss')
 plt.legend()
 plt.show()
-
